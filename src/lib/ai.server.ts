@@ -38,7 +38,7 @@ For each: state the exact minimum requirements from the most recent prospectus y
 Be honest when a learner does not meet requirements. Remind staff to confirm against the current year's official prospectus. Write in plain English.`;
 
 export async function runQualificationAnalysis(
-  app: Record<string, any>,
+  app: any,
 ): Promise<{ ok: true; analysis: AiAnalysis } | { ok: false; error: string }> {
   const apiKey = process.env["LOVABLE_API_KEY"];
   if (!apiKey) return { ok: false, error: "The assistant is not configured." };
