@@ -11,7 +11,6 @@ export const Route = createFileRoute("/auth")({
   component: AuthPage,
 });
 
-const ADMIN_EMAIL = "sitholenathi817@gmail.com";
 
 function AuthPage() {
   const [isSignUp, setIsSignUp] = useState(false);
@@ -46,7 +45,7 @@ function AuthPage() {
         if (error) throw error;
 
         if (data.session) {
-          navigate({ to: "/dashboard" as any });
+          navigate({ to: "/dashboard" });
         } else {
           setIsSignUp(false);
           setSuccessMessage("Account created successfully! Please sign in with your credentials.");
@@ -58,13 +57,9 @@ function AuthPage() {
         });
         if (error) throw error;
 
-        // When logging in with the admin email, route straight to the admin portal
-        if (cleanEmail === ADMIN_EMAIL) {
-          window.location.href = "/admin";
-          return;
-        } else {
-          navigate({ to: "/dashboard" as any });
-        }
+        const { data: roles } = await supabase
+          .from("user_roles").select("role").eq("user_id", data.user.id).eq("role", "admin");
+        navigate({ to: roles?.length ? "/admin" : "/dashboard" });
       }
     } catch (err: any) {
       setErrorMessage(err.message || "Invalid login credentials. Please check your email and password.");

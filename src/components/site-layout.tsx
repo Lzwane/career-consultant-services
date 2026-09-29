@@ -79,11 +79,8 @@ export function SiteLayout({ children }: { children: ReactNode }) {
 
             {user ? (
               <div className="ml-2 flex items-center gap-2">
-                <Button asChild size="sm" variant="outline">
-                  <Link to="/submit">Submit Documents</Link>
-                </Button>
-                <Button asChild size="sm" variant="ghost">
-                  <Link to="/status">Check Status</Link>
+                <Button asChild size="sm">
+                  <Link to="/dashboard">My Dashboard</Link>
                 </Button>
                 <Button size="sm" variant="outline" onClick={handleSignOut}>
                   Sign Out
@@ -138,18 +135,11 @@ export function SiteLayout({ children }: { children: ReactNode }) {
             {user ? (
               <div className="mt-3 flex flex-col gap-2 border-t border-border pt-3">
                 <Link
-                  to="/submit"
+                  to="/dashboard"
                   onClick={() => setOpen(false)}
                   className="block rounded-md px-3 py-2 text-sm font-semibold text-primary"
                 >
-                  Submit Documents
-                </Link>
-                <Link
-                  to="/status"
-                  onClick={() => setOpen(false)}
-                  className="block rounded-md px-3 py-2 text-sm font-semibold text-muted-foreground"
-                >
-                  Check Status
+                  My Dashboard
                 </Link>
                 <Button
                   size="sm"
