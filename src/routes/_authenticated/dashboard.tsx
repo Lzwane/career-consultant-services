@@ -30,14 +30,15 @@ const NAV: PortalNavItem[] = [
   { key: "feedback", label: "Feedback", icon: MessageSquare },
 ];
 
-type Form = Record<string, string>;
 const FIELDS = [
   "title", "first_name", "surname", "id_number", "date_of_birth", "gender", "nationality", "home_language",
   "phone", "email", "address", "city", "province", "postal_code",
   "guardian_name", "guardian_relationship", "guardian_phone", "guardian_email",
   "disability", "grade_status", "school", "matric_year", "exam_body",
   "field_of_interest", "first_choice", "second_choice", "third_choice", "preferred_institutions", "funding", "notes",
-];
+] as const;
+type FieldKey = (typeof FIELDS)[number];
+type Form = { [K in FieldKey]?: string };
 
 function StudentDashboard() {
   const navigate = useNavigate();
@@ -69,7 +70,7 @@ function StudentDashboard() {
     const { data: a } = await supabase.from("applications").select("*").eq("user_id", u.user.id).maybeSingle();
     if (a) {
       setApp(a);
-      const f: Form = {};
+      const f: Form = {} as Form;
       FIELDS.forEach((k) => (f[k] = (a as any)[k] ?? ""));
       setForm(f);
       setSubjects(Array.isArray(a.subjects) ? (a.subjects as SubjectMark[]) : []);
@@ -96,7 +97,7 @@ function StudentDashboard() {
     load();
   }, []);
 
-  const set = (k: string) => (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) =>
+  const set = (k: FieldKey) => (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) =>
     setForm((f) => ({ ...f, [k]: e.target.value }));
 
   async function save(extra: Record<string, unknown> = {}) {
@@ -122,7 +123,10 @@ function StudentDashboard() {
   async function upload(docKey: string, file: File) {
     const current = app ?? (await save());
     if (!current) return;
-    if (file.size > 20 * 1024 * 1024) return toast.error("Files must be smaller than 20MB.");
+    if (file.size > 20 * 1024 * 1024) {
+      toast.error("Files must be smaller than 20MB.");
+      return;
+    }
     setUploading(docKey);
     const safe = file.name.replace(/[^a-zA-Z0-9._-]/g, "_");
     const path = `${userId}/${docKey}-${Date.now()}-${safe}`;
