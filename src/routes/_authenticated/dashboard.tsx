@@ -104,8 +104,8 @@ function StudentDashboard() {
     setSaving(true);
     const payload: Record<string, unknown> = { user_id: userId, subjects, aps, ...extra };
     FIELDS.forEach((k) => (payload[k] = form[k]?.toString().trim() || null));
-    payload.full_name = [form.first_name, form.surname].filter(Boolean).join(" ") || null;
-    payload.email = form.email || email;
+    payload["full_name"] = [form.first_name, form.surname].filter(Boolean).join(" ") || null;
+    payload["email"] = form.email || email;
     const q = app
       ? supabase.from("applications").update(payload as any).eq("id", app.id).select().single()
       : supabase.from("applications").insert(payload as any).select().single();
